@@ -1307,6 +1307,12 @@
 					}
 				}
 			}
+			// Handle cases where user enters 2 digit year in 4 digit format
+			if( date.getFullYear() < 30 ) {
+				date.setUTCFullYear(2000 + date.getFullYear());
+			} else if( date.getFullYear() < 100 ) {
+				date.setUTCFullYear(1900 + date.getFullYear());
+			}
 			return date;
 		},
 		formatDate: function(date, format, language){
