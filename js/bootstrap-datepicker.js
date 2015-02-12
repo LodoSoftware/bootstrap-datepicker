@@ -1242,10 +1242,20 @@
 			var parts = date && date.match(this.nonpunctuation) || [],
 				date = new Date(),
 				parsed = {},
-				setters_order = ['yyyy', 'yy', 'M', 'MM', 'm', 'mm', 'd', 'dd'],
+				// Removed 'yy' - D3 Banking
+				setters_order = ['yyyy', 'M', 'MM', 'm', 'mm', 'd', 'dd'],
 				setters_map = {
-					yyyy: function(d,v){ return d.setUTCFullYear(v); },
-					yy: function(d,v){ return d.setUTCFullYear(2000+v); },
+					yyyy: function(d,v){
+					    	// Handle cases where user enters 2 digit year in 4 digit format - D3 Banking
+			                    	if(v < 30) {
+			                        	v = 2000 + v;
+			                    	} else if(v < 100) {
+			                        	v = 1900 + v;
+			                    	}
+			                	return d.setUTCFullYear(v);
+			                },
+			                // removing since we always need the full year - D3 Banking
+			                // yy: function(d,v){ return d.setUTCFullYear(2000+v); },
 					m: function(d,v){
 						if (isNaN(d))
 							return d;
@@ -1306,12 +1316,6 @@
 							date = _date;
 					}
 				}
-			}
-			// Handle cases where user enters 2 digit year in 4 digit format
-			if( date.getUTCFullYear() < 30 ) {
-				date.setUTCFullYear(2000 + date.getUTCFullYear());
-			} else if( date.getFullYear() < 100 ) {
-				date.setUTCFullYear(1900 + date.getUTCFullYear());
 			}
 			return date;
 		},
