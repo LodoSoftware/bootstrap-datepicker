@@ -1622,30 +1622,36 @@
 			parts = date && date.match(this.nonpunctuation) || [];
 			date = new Date();
 			var parsed = {},
-				setters_order = ['yyyy', 'yy', 'M', 'MM', 'm', 'mm', 'd', 'dd'],
-				setters_map = {
-					yyyy: function(d,v){
-						return d.setUTCFullYear(v);
-					},
-					yy: function(d,v){
-						return d.setUTCFullYear(2000+v);
-					},
-					m: function(d,v){
-						if (isNaN(d))
-							return d;
-						v -= 1;
-						while (v < 0) v += 12;
-						v %= 12;
-						d.setUTCMonth(v);
-						while (d.getUTCMonth() !== v)
-							d.setUTCDate(d.getUTCDate()-1);
-						return d;
-					},
-					d: function(d,v){
-						return d.setUTCDate(v);
+			// Removed 'yy' - D3 Banking
+			setters_order = ['yyyy', 'M', 'MM', 'm', 'mm', 'd', 'dd'],
+			setters_map = {
+				yyyy: function(d,v){
+					// Handle cases where user enters 2 digit year in 4 digit format - D3 Banking
+					if(v < 30) {
+						v = 2000 + v;
+					} else if(v < 100) {
+						v = 1900 + v;
 					}
+					return d.setUTCFullYear(v);
 				},
-				val, filtered;
+				// removing since we always need the full year - D3 Banking
+				// yy: function(d,v){ return d.setUTCFullYear(2000+v); },
+				m: function(d,v){
+					if (isNaN(d))
+						return d;
+					v -= 1;
+					while (v < 0) v += 12;
+					v %= 12;
+					d.setUTCMonth(v);
+					while (d.getUTCMonth() !== v)
+						d.setUTCDate(d.getUTCDate()-1);
+					return d;
+				},
+				d: function(d,v){
+					return d.setUTCDate(v);
+				}
+			},
+			val, filtered;
 			setters_map['M'] = setters_map['MM'] = setters_map['mm'] = setters_map['m'];
 			setters_map['dd'] = setters_map['d'];
 			date = UTCDate(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
