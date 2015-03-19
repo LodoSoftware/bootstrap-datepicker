@@ -1626,16 +1626,16 @@
 			setters_order = ['yyyy', 'M', 'MM', 'm', 'mm', 'd', 'dd'],
 			setters_map = {
 				yyyy: function(d,v){
-		          	// Handle cases where user enters 2 digit year in 4 digit format - D3 Banking
-		          	if(v < 30) {
-		              v = 2000 + v;
-		          	} else if(v < 100) {
-		              v = 1900 + v;
-		          	}
-		          	return d.setUTCFullYear(v);
-        		},
-        		// removing since we always need the full year - D3 Banking
-        		// yy: function(d,v){ return d.setUTCFullYear(2000+v); },
+					// Handle cases where user enters 2 digit year in 4 digit format - D3 Banking
+					if(v < 30) {
+						v = 2000 + v;
+					} else if(v < 100) {
+						v = 1900 + v;
+					}
+					return d.setUTCFullYear(v);
+				},
+				// removing since we always need the full year - D3 Banking
+				// yy: function(d,v){ return d.setUTCFullYear(2000+v); },
 				m: function(d,v){
 					if (isNaN(d))
 						return d;
